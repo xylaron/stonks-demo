@@ -16,7 +16,7 @@ export default function Home() {
           </h1>
           <button
             onClick={() => {
-              router.push("/testing");
+              void router.push("/testing");
             }}
             className="rounded-md bg-white px-2 py-1 font-bold"
           >

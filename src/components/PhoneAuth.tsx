@@ -42,7 +42,7 @@ const PhoneAuth: React.FC = () => {
     signInWithCredential(auth, credential)
       .then((result) => {
         console.log("Signed in with phone number!", result.user);
-        router.push("/");
+        void router.push("/");
       })
       .catch((error) => {
         console.log(error);

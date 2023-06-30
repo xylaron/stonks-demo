@@ -4,14 +4,13 @@ import { getAuth } from "firebase/auth";
 import { useRouter } from "next/router";
 import firebase_app from "../firebase/config";
 
-const auth = getAuth(firebase_app);
-
 interface ProtectedRouteProps {
   children: React.ReactNode;
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const router = useRouter();
+  const auth = getAuth(firebase_app);
   const [user, loading] = useAuthState(auth);
 
   useEffect(() => {
@@ -20,7 +19,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     }
   }, [user, loading, router]);
 
-  if (loading) {
+  if (loading || !user) {
     return (
       <main className="flex min-h-screen flex-col items-center justify-center">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">

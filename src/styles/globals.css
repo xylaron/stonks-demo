@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  @apply bg-neutral-900;
+  @apply text-neutral-100;
+  @apply font-medium;
+}
+
+span {
+  @apply text-blue-500;
+}
+
 /* Remove default button arrows for number input*/
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -11,4 +21,11 @@ input::-webkit-inner-spin-button {
 
 input[type="number"] {
   -moz-appearance: textfield;
+}
+
+/* Remove default focus outline */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
 }

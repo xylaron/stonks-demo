@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { db } from "firebase/config";
 import { useRouter } from "next/router";
 import {
   getAuth,
@@ -111,9 +113,28 @@ const PhoneAuth: React.FC = () => {
     const credential = PhoneAuthProvider.credential(verificationId, code);
 
     signInWithCredential(auth, credential)
-      .then((result) => {
+      .then(async (result) => {
         console.log("Signed in with phone number!", result.user);
-        void router.push("/");
+
+        if (result.user) {
+          const userRef = doc(db, "users", result.user.uid);
+          const userSnap = await getDoc(userRef);
+
+          //if user doesn't exist, create user in db, redirect to welcome page
+          if (!userSnap.exists()) {
+            await setDoc(userRef, {
+              uid: result.user.uid,
+              phoneNumber: result.user.phoneNumber,
+              firstLogin: new Date().toISOString(),
+            });
+            toast.success("Registration successful!");
+            void router.push("/welcome");
+          } else {
+            //if user exists, redirect to home page
+            toast.success(`Welcome back ${result.user.displayName!}!`);
+            void router.push("/");
+          }
+        }
       })
       .catch((error) => {
         toast.error("Invalid code");

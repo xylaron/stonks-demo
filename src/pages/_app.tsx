@@ -6,6 +6,7 @@ import "styles/globals.css";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   const router = useRouter();
+
   return (
     <>
       <Toaster />

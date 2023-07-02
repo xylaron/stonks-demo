@@ -1,7 +1,8 @@
 import PhoneAuth from "components/PhoneAuth";
+import { type NextPage } from "next";
 import Head from "next/head";
 
-export default function Home() {
+const Login: NextPage = () => {
   return (
     <>
       <Head>
@@ -17,4 +18,6 @@ export default function Home() {
       </main>
     </>
   );
-}
+};
+
+export default Login;

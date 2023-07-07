@@ -6,7 +6,7 @@ const Login: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Stonks Demo</title>
+        <title>Login - Stonks Demo</title>
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center">
         <div className="container flex flex-col items-center justify-center gap-8">

@@ -14,7 +14,7 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Stonks Demo</title>
+        <title>Home - Stonks Demo</title>
       </Head>
       <ProtectedRoute>
         <main className="flex min-h-screen flex-col items-center justify-center">

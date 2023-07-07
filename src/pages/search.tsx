@@ -92,7 +92,7 @@ const Search: NextPage = () => {
       <main className="flex min-h-screen flex-col items-center">
         <div className="container flex flex-col items-center justify-center gap-8 px-4 py-16">
           <div className="w-full px-2 text-4xl font-extrabold">Search</div>
-          <div className="relative w-full rounded-lg bg-neutral-700 p-2 text-center text-xl shadow-md">
+          <div className="relative w-full rounded-lg bg-neutral-700 p-2 text-center shadow-md">
             <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 transform text-neutral-500" />
             <input
               type="text"

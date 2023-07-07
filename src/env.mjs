@@ -25,7 +25,7 @@ export const env = createEnv({
     NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: z.string().min(1),
     NEXT_PUBLIC_ALPHAVANTAGE_API_KEY: z.string().min(1),
     NEXT_PUBLIC_ALGOLIA_APP_ID: z.string().min(1),
-    NEXT_PUBLIC_ALGOLIA_SEARCH_KEY: z.string().min(1),
+    NEXT_PUBLIC_ALGOLIA_API_KEY: z.string().min(1),
   },
 
   /**
@@ -43,7 +43,7 @@ export const env = createEnv({
     NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
     NEXT_PUBLIC_ALPHAVANTAGE_API_KEY: process.env.NEXT_PUBLIC_ALPHAVANTAGE_API_KEY,
     NEXT_PUBLIC_ALGOLIA_APP_ID: process.env.NEXT_PUBLIC_ALGOLIA_APP_ID,
-    NEXT_PUBLIC_ALGOLIA_SEARCH_KEY: process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY,
+    NEXT_PUBLIC_ALGOLIA_API_KEY: process.env.NEXT_PUBLIC_ALGOLIA_API_KEY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.

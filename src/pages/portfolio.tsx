@@ -22,7 +22,7 @@ const Portfolio: NextPage = () => {
       if (auth.currentUser) {
         const docRef = doc(db, "users", auth.currentUser.uid);
         const docSnap = await getDoc(docRef);
-        const favourites = docSnap.data()?.favourites || [];
+        const favourites = (docSnap.data()?.favourites as Favourite[]) || [];
 
         //sort favourites alphabetically by symbol
         favourites.sort((a: Favourite, b: Favourite) =>
@@ -32,21 +32,21 @@ const Portfolio: NextPage = () => {
         setFavourites(favourites);
       }
     };
-    fetchFavourites();
-    console.log("fetching");
+    void fetchFavourites();
   }, [auth]);
 
-  const removeFavourite = async (symbol: string, name: string) => {
+  const removeFavourite = async (symbol: string) => {
     const docRef = doc(db, "users", auth.currentUser!.uid);
     const docSnap = await getDoc(docRef);
 
-    const favourites = docSnap.data()?.favourites || [];
+    const favourites = (docSnap.data()?.favourites as Favourite[]) || [];
 
     const newFavourites = favourites.filter(
       (fav: Favourite) => fav.symbol !== symbol
     );
     await updateDoc(docRef, { favourites: newFavourites }).catch((err) => {
       toast.error("Something went wrong. Please try again.");
+      console.log(err);
     });
     newFavourites.sort((a: Favourite, b: Favourite) =>
       a.symbol.localeCompare(b.symbol)
@@ -77,14 +77,14 @@ const Portfolio: NextPage = () => {
                     (fav: Favourite) => fav.symbol === symbol
                   ) ? (
                     <IoIosStar
-                      onClick={() => removeFavourite(symbol, name)}
+                      onClick={() => void removeFavourite(symbol)}
                       color="yellow"
                       size={20}
                     />
                   ) : (
                     <IoIosStarOutline
                       size={20}
-                      onClick={() => removeFavourite(symbol, name)}
+                      onClick={() => void removeFavourite(symbol)}
                     />
                   )}
                 </div>

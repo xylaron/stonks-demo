@@ -32,18 +32,18 @@ const Search: NextPage = () => {
       if (auth.currentUser) {
         const docRef = doc(db, "users", auth.currentUser.uid);
         const docSnap = await getDoc(docRef);
-        const favourites = docSnap.data()?.favourites || [];
+        const favourites = (docSnap.data()?.favourites as Favourite[]) || [];
         setFavourites(favourites);
       }
     };
-    fetchFavourites();
-  }, [term]);
+    void fetchFavourites();
+  }, [term, auth]);
 
   const addRemoveFavourite = async (symbol: string, name: string) => {
     const docRef = doc(db, "users", auth.currentUser!.uid);
     const docSnap = await getDoc(docRef);
 
-    const favourites = docSnap.data()?.favourites || [];
+    const favourites = (docSnap.data()?.favourites as Favourite[]) || [];
 
     const existingFavourite = favourites.find(
       (fav: Favourite) => fav.symbol === symbol
@@ -55,6 +55,7 @@ const Search: NextPage = () => {
       );
       await updateDoc(docRef, { favourites: newFavourites }).catch((err) => {
         toast.error("Something went wrong. Please try again.");
+        console.error(err);
       });
       setFavourites(newFavourites);
     } else {
@@ -62,13 +63,14 @@ const Search: NextPage = () => {
       const newFavourites = [...favourites, newFavorite];
       await updateDoc(docRef, { favourites: newFavourites }).catch((err) => {
         toast.error("Something went wrong. Please try again.");
+        console.error(err);
       });
       setFavourites(newFavourites);
     }
   };
 
   const fetchResults = (term: string) =>
-    axios.get(`/api/search?term=${term}`).then((res) => res.data);
+    axios.get(`/api/search?term=${term}`).then((res) => res.data as Result[]);
 
   const {
     data: results,
@@ -100,9 +102,9 @@ const Search: NextPage = () => {
               placeholder="Search stocks..."
             />
           </div>
-          {results?.length > 0 && (
+          {results?.length !== 0 && (
             <div className="w-full px-2">
-              {results.map((result: Result, index: number) => (
+              {results?.map((result: Result, index: number) => (
                 <div
                   key={index}
                   className="flex items-center justify-between border-b border-neutral-600 p-2"
@@ -118,7 +120,7 @@ const Search: NextPage = () => {
                   ) ? (
                     <IoIosStar
                       onClick={() =>
-                        addRemoveFavourite(result.symbol, result.name)
+                        void addRemoveFavourite(result.symbol, result.name)
                       }
                       color="yellow"
                       size={20}
@@ -127,7 +129,7 @@ const Search: NextPage = () => {
                     <IoIosStarOutline
                       size={20}
                       onClick={() =>
-                        addRemoveFavourite(result.symbol, result.name)
+                        void addRemoveFavourite(result.symbol, result.name)
                       }
                     />
                   )}
@@ -137,7 +139,7 @@ const Search: NextPage = () => {
           )}
           {results?.length === 0 && term.length > 0 && (
             <div className="w-full text-center text-neutral-500">
-              No results found for "{term}".
+              No results found for &quot;{term}&quot;.
             </div>
           )}
         </div>

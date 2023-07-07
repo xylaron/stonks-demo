@@ -34,11 +34,12 @@ const Footer: React.FC = () => {
             size={16}
             className={router.pathname === "/portfolio" ? "text-blue-400" : ""}
           />
-          <p
+          <Link
+            href="/portfolio"
             className={router.pathname === "/portfolio" ? "text-blue-400" : ""}
           >
             Portfolio
-          </p>
+          </Link>
         </div>
       </div>
     </footer>

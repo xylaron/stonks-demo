@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "react-query";
-import Footer from "components/Footer";
+import Navbar from "components/Navbar";
 import { type AppType } from "next/dist/shared/lib/utils";
 import { Toaster } from "react-hot-toast";
 import { useRouter } from "next/router";
@@ -14,7 +14,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
     <>
       <QueryClientProvider client={queryClient}>
         <Toaster />
-        {router.pathname !== "/login" && <Footer />}
+        {router.pathname !== "/login" && <Navbar />}
         <Component {...pageProps} />
       </QueryClientProvider>
     </>

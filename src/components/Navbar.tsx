@@ -5,7 +5,7 @@ import { BiSearch, BiBriefcase } from "react-icons/bi";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
-const Footer: React.FC = () => {
+const Navbar: React.FC = () => {
   const auth = getAuth(firebase_app);
   const [user, loading] = useAuthState(auth);
   const router = useRouter();
@@ -16,34 +16,39 @@ const Footer: React.FC = () => {
 
   return (
     <footer className="fixed inset-x-0 bottom-0 z-50 bg-neutral-800 py-3">
-      <div className="container mx-auto flex items-center justify-evenly gap-16 text-sm font-semibold">
-        <div className="flex flex-col items-center">
+      <div className="container mx-auto flex items-center justify-evenly text-sm font-semibold">
+        <Link
+          href="/search"
+          className={
+            router.pathname === "/search"
+              ? "flex w-full flex-col items-center text-blue-400"
+              : "flex w-full flex-col items-center"
+          }
+        >
           <BiSearch
             size={16}
             className={router.pathname === "/search" ? "text-blue-400" : ""}
           />
-          <Link
-            href="/search"
-            className={router.pathname === "/search" ? "text-blue-400" : ""}
-          >
-            Search
-          </Link>
-        </div>
-        <div className="flex flex-col items-center">
+          Search
+        </Link>
+
+        <Link
+          href="/portfolio"
+          className={
+            router.pathname === "/portfolio"
+              ? "flex w-full flex-col items-center  text-blue-400"
+              : "flex w-full flex-col items-center"
+          }
+        >
           <BiBriefcase
             size={16}
             className={router.pathname === "/portfolio" ? "text-blue-400" : ""}
           />
-          <Link
-            href="/portfolio"
-            className={router.pathname === "/portfolio" ? "text-blue-400" : ""}
-          >
-            Portfolio
-          </Link>
-        </div>
+          Portfolio
+        </Link>
       </div>
     </footer>
   );
 };
 
-export default Footer;
+export default Navbar;

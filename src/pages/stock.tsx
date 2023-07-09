@@ -50,7 +50,9 @@ const Stock: NextPage = () => {
       .get(
         `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&tickers=${
           router.query.symbol as string
-        }&apikey=${process.env.NEXT_PUBLIC_ALPHAVANTAGE_API_KEY as string}`
+        }&apikey=${
+          process.env.NEXT_PUBLIC_ALPHAVANTAGE_API_KEY as string
+        }&limit=10`
         // `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&tickers=AAPL&apikey=demo`
       )
       .then((res) => res.data as NewsData);

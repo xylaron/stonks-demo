@@ -20,10 +20,11 @@ const Home: NextPage = () => {
         <main className="flex min-h-screen flex-col items-center justify-center">
           <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
             <h1 className="text-5xl font-extrabold">
-              <span>Dashboard</span>
+              Welcome <span>Back</span>
+              {"."}
             </h1>
             <p className="text-center text-xl font-semibold">
-              Logged in as: {user?.displayName}
+              Currently logged in as: {user?.displayName}
             </p>
             <button
               className="rounded-md bg-blue-600 px-4 py-2 text-white"

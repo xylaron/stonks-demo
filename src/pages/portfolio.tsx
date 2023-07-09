@@ -6,6 +6,8 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import firebase_app, { db } from "firebase/config";
 import { getAuth } from "firebase/auth";
 import { toast } from "react-hot-toast";
+import { useRouter } from "next/router";
+import LoadingSpin from "components/LoadingSpin";
 
 interface Favourite {
   name: string;
@@ -14,6 +16,7 @@ interface Favourite {
 
 const Portfolio: NextPage = () => {
   const auth = getAuth(firebase_app);
+  const router = useRouter();
 
   const [favourites, setFavourites] = useState<Favourite[]>([]);
 
@@ -67,7 +70,16 @@ const Portfolio: NextPage = () => {
               {favourites.map(({ name, symbol }, index) => (
                 <div
                   key={index}
-                  className="flex items-center justify-between border-b border-neutral-600 p-2"
+                  className="flex cursor-pointer items-center justify-between border-b border-neutral-600 p-2"
+                  onClick={() =>
+                    void router.push({
+                      pathname: `/stock`,
+                      query: {
+                        name: name,
+                        symbol: symbol,
+                      },
+                    })
+                  }
                 >
                   <div>
                     <div className="font-semibold">{symbol}</div>

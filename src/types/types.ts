@@ -22,6 +22,8 @@ interface TimeSeries {
 export interface StockData {
   "Meta Data": MetaData;
   "Time Series (Daily)": TimeSeries;
+  Information?: string;
+  Note?: string;
 }
 
 interface TickerSentiment {
@@ -57,6 +59,8 @@ export interface NewsData {
   sentiment_score_definition: string;
   relevance_score_definition: string;
   feed: Feed[];
+  Information?: string;
+  Note?: string;
 }
 
 export interface StockOverview {
@@ -106,4 +110,6 @@ export interface StockOverview {
   SharesOutstanding: string;
   DividendDate: string;
   ExDividendDate: string;
+  Information?: string;
+  Note?: string;
 }

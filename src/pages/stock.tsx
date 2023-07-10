@@ -184,6 +184,16 @@ const Stock: NextPage = () => {
     ],
   };
 
+  const yesterdayClose = Number(
+    Object.values(stockData!["Time Series (Daily)"])[1]!["4. close"]
+  );
+
+  const todayClose = Number(
+    Object.values(stockData!["Time Series (Daily)"])[0]!["4. close"]
+  );
+
+  const changePercent = ((todayClose - yesterdayClose) / yesterdayClose) * 100;
+
   return (
     <>
       <main className="flex min-h-screen flex-col items-center">
@@ -205,6 +215,31 @@ const Stock: NextPage = () => {
             </div>
             <div className="text-base text-neutral-500">
               {router.query.name}
+            </div>
+            <div className="flex flex-row items-baseline gap-2">
+              <div className="text-2xl">
+                {Intl.NumberFormat("en-US", {
+                  style: "currency",
+                  currency: "USD",
+                }).format(todayClose)}
+              </div>
+              <div>
+                {changePercent > 0 ? (
+                  <div className="flex flex-row items-center gap-2 text-green-500">
+                    <div className="text-lg font-bold">
+                      {changePercent.toFixed(2)}%
+                    </div>
+                    <div className="text-lg font-bold">▲</div>
+                  </div>
+                ) : (
+                  <div className="flex flex-row items-center gap-2 text-red-500">
+                    <div className="text-lg font-bold">
+                      {changePercent.toFixed(2)}%
+                    </div>
+                    <div className="text-lg font-bold">▼</div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
           {/* Graph Pickers */}

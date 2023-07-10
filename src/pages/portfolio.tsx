@@ -19,6 +19,7 @@ const Portfolio: NextPage = () => {
   const router = useRouter();
 
   const [favourites, setFavourites] = useState<Favourite[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchFavourites = async () => {
@@ -33,10 +34,19 @@ const Portfolio: NextPage = () => {
         );
 
         setFavourites(favourites);
+        setLoading(false);
       }
     };
     void fetchFavourites();
   }, [auth]);
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center">
+        <LoadingSpin />
+      </div>
+    );
+  }
 
   const removeFavourite = async (symbol: string) => {
     const docRef = doc(db, "users", auth.currentUser!.uid);
@@ -65,7 +75,7 @@ const Portfolio: NextPage = () => {
       <main className="flex min-h-screen flex-col items-center">
         <div className="container flex flex-col items-center justify-center gap-8 px-4 py-16">
           <div className="w-full px-2 text-4xl font-extrabold">Portfolio</div>
-          {favourites?.length > 0 && (
+          {favourites?.length > 0 ? (
             <div className="w-full px-2">
               {favourites.map(({ name, symbol }, index) => (
                 <div
@@ -85,22 +95,25 @@ const Portfolio: NextPage = () => {
                     <div className="font-semibold">{symbol}</div>
                     <div className="text-sm text-neutral-500">{name}</div>
                   </div>
-                  {favourites.find(
-                    (fav: Favourite) => fav.symbol === symbol
-                  ) ? (
-                    <IoIosStar
-                      onClick={() => void removeFavourite(symbol)}
-                      color="yellow"
-                      size={20}
-                    />
-                  ) : (
-                    <IoIosStarOutline
-                      size={20}
-                      onClick={() => void removeFavourite(symbol)}
-                    />
-                  )}
+                  <IoIosStar
+                    onClick={(event: React.MouseEvent) => {
+                      event.stopPropagation();
+                      void removeFavourite(symbol);
+                    }}
+                    color="yellow"
+                    size={20}
+                  />
                 </div>
               ))}
+            </div>
+          ) : (
+            <div className="w-full px-2 text-center">
+              <div className="text-2xl font-semibold">
+                You have no favourites.
+              </div>
+              <div className="text-sm text-neutral-500">
+                Add some favourites to see them here.
+              </div>
             </div>
           )}
         </div>

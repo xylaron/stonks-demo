@@ -33,6 +33,8 @@ const Stock: NextPage = () => {
   const router = useRouter();
 
   const [stockGraphPick, setStockGraphPick] = useState(1);
+  const displayCount = 10;
+
   const [favourites, setFavourites] = useState<Favourite[]>([]);
 
   useEffect(() => {
@@ -110,12 +112,12 @@ const Stock: NextPage = () => {
   const fetchNewsData = () =>
     axios
       .get(
-        // `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&tickers=${
-        //   router.query.symbol as string
-        // }&apikey=${
-        //   process.env.NEXT_PUBLIC_ALPHAVANTAGE_API_KEY as string
-        // }&limit=10`
-        `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&tickers=AAPL&apikey=demo`
+        `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&tickers=${
+          router.query.symbol as string
+        }&apikey=${
+          process.env.NEXT_PUBLIC_ALPHAVANTAGE_API_KEY as string
+        }&limit=10`
+        // `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&tickers=AAPL&apikey=demo`
       )
       .then((res) => res.data as NewsData);
 
@@ -131,10 +133,10 @@ const Stock: NextPage = () => {
   const fetchOverview = () =>
     axios
       .get(
-        // `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${
-        //   router.query.symbol as string
-        // }&apikey=${process.env.NEXT_PUBLIC_ALPHAVANTAGE_API_KEY as string}`
-        `https://www.alphavantage.co/query?function=OVERVIEW&symbol=IBM&apikey=demo`
+        `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${
+          router.query.symbol as string
+        }&apikey=${process.env.NEXT_PUBLIC_ALPHAVANTAGE_API_KEY as string}`
+        // `https://www.alphavantage.co/query?function=OVERVIEW&symbol=IBM&apikey=demo`
       )
       .then((res) => res.data as StockOverview);
 
@@ -282,6 +284,41 @@ const Stock: NextPage = () => {
   );
 
   const changePercent = ((todayClose - yesterdayClose) / yesterdayClose) * 100;
+
+  const reformatTime = (time: string) => {
+    const year = time.slice(0, 4);
+    const month = time.slice(4, 6);
+    const day = time.slice(6, 8);
+    return `${year}-${month}-${day}`;
+  };
+
+  const calculateDifference = (time: string) => {
+    const now = new Date();
+    const then = new Date(reformatTime(time));
+
+    const diff = Math.abs(now.getTime() - then.getTime());
+
+    const daysDiff = Math.floor(diff / (1000 * 60 * 60 * 24));
+    if (daysDiff > 0) {
+      if (daysDiff < 7) {
+        return `${daysDiff}d ago`;
+      } else {
+        const weeksDiff = Math.floor(daysDiff / 7);
+        if (weeksDiff < 4) {
+          return `${weeksDiff}w ago`;
+        } else {
+          const monthsDiff = Math.floor(daysDiff / 30.44);
+          if (monthsDiff < 12) {
+            return `${monthsDiff}m ago`;
+          } else {
+            const yearsDiff = Math.floor(daysDiff / 365.25);
+            return `${yearsDiff}y ago`;
+          }
+        }
+      }
+    }
+    return `Today`;
+  };
 
   return (
     <>
@@ -589,15 +626,16 @@ const Stock: NextPage = () => {
           <div className="flex w-full flex-col gap-4 p-2 py-4">
             <div className="py-2 text-3xl font-extrabold">News</div>
             {newsData!.feed ? (
-              newsData!.feed.map((feed, index) => (
-                <div key={index} className="flex flex-col gap-2">
-                  <div className="flex flex-row justify-between gap-8">
-                    <a className="font-bold" href={`${feed.url}`}>
-                      {feed.title}
-                    </a>{" "}
-                    <div className="min-w-fit text-right font-medium text-neutral-300">{`${feed.source}`}</div>
-                  </div>
+              newsData!.feed.slice(0, displayCount).map((feed, index) => (
+                <div key={index} className="flex flex-col">
+                  <div className="min-w-fit pb-1 text-xs font-medium text-neutral-500">{`${feed.source}`}</div>
+                  <a className="font-bold" href={`${feed.url}`}>
+                    {feed.title}
+                  </a>
                   <div className="text-neutral-500">{feed.summary}</div>
+                  <div className="items-baseline whitespace-nowrap pt-1 text-xs font-normal text-neutral-500">{`${calculateDifference(
+                    feed.time_published
+                  )}`}</div>
                 </div>
               ))
             ) : (

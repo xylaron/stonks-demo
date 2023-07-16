@@ -17,6 +17,7 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { RxCross2 } from "react-icons/rx";
 import LoadingSpin from "components/LoadingSpin";
+import toast from "react-hot-toast";
 
 const Stock: NextPage = () => {
   const router = useRouter();
@@ -28,7 +29,9 @@ const Stock: NextPage = () => {
     isLoading: isLoadingStock,
     isError: isErrorStock,
     isFetching: isFetchingStock,
-  } = useQuery<StockData>("stock", () => fetchStockData());
+  } = useQuery<StockData>("stock", () => fetchStockData(), {
+    refetchOnWindowFocus: false,
+  });
 
   const fetchStockData = () =>
     axios
@@ -47,7 +50,9 @@ const Stock: NextPage = () => {
     isLoading: isLoadingNews,
     isError: isErrorNews,
     isFetching: isFetchingNews,
-  } = useQuery<NewsData>("news", () => fetchNewsData());
+  } = useQuery<NewsData>("news", () => fetchNewsData(), {
+    refetchOnWindowFocus: false,
+  });
 
   const fetchNewsData = () =>
     axios
@@ -66,7 +71,9 @@ const Stock: NextPage = () => {
     isLoading: isLoadingOverview,
     isError: isErrorOverview,
     isFetching: isFetchingOverview,
-  } = useQuery<StockOverview>("overview", () => fetchOverview());
+  } = useQuery<StockOverview>("overview", () => fetchOverview(), {
+    refetchOnWindowFocus: false,
+  });
 
   const fetchOverview = () =>
     axios
@@ -94,11 +101,16 @@ const Stock: NextPage = () => {
   }
 
   if (isErrorStock || isErrorNews || isErrorOverview) {
+    void router.push({
+      pathname: router.query.lastSearch ? `/search` : `/portfolio`,
+      query: { lastSearch: router.query.lastSearch },
+    });
+    toast.error("An error occurred. Please try again.", {
+      id: "api-call-error",
+    });
     return (
       <main className="flex min-h-screen flex-col items-center justify-center">
-        <div className="text-lg font-bold">
-          An error occured, please try again.
-        </div>
+        <LoadingSpin />
       </main>
     );
   }
@@ -108,17 +120,31 @@ const Stock: NextPage = () => {
     newsData!.Information ||
     stockOverview!.Information
   ) {
+    void router.push({
+      pathname: router.query.lastSearch ? `/search` : `/portfolio`,
+      query: { lastSearch: router.query.lastSearch },
+    });
+    toast.error("Error: Invalid API Call.", {
+      id: "api-call-invalid",
+    });
     return (
       <main className="flex min-h-screen flex-col items-center justify-center">
-        <div className="text-lg font-bold">Error: Invalid API call.</div>
+        <LoadingSpin />
       </main>
     );
   }
 
   if (stockData!.Note || newsData!.Note || stockOverview!.Note) {
+    void router.push({
+      pathname: router.query.lastSearch ? `/search` : `/portfolio`,
+      query: { lastSearch: router.query.lastSearch },
+    });
+    toast.error("Error: API call limit reached. Please try again later.", {
+      id: "api-call-limit",
+    });
     return (
       <main className="flex min-h-screen flex-col items-center justify-center">
-        <div className="text-lg font-bold">Error: API Limit Reached.</div>
+        <LoadingSpin />
       </main>
     );
   }

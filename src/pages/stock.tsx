@@ -27,6 +27,7 @@ const Stock: NextPage = () => {
     data: stockData,
     isLoading: isLoadingStock,
     isError: isErrorStock,
+    isFetching: isFetchingStock,
   } = useQuery<StockData>("stock", () => fetchStockData());
 
   const fetchStockData = () =>
@@ -45,6 +46,7 @@ const Stock: NextPage = () => {
     data: newsData,
     isLoading: isLoadingNews,
     isError: isErrorNews,
+    isFetching: isFetchingNews,
   } = useQuery<NewsData>("news", () => fetchNewsData());
 
   const fetchNewsData = () =>
@@ -63,6 +65,7 @@ const Stock: NextPage = () => {
     data: stockOverview,
     isLoading: isLoadingOverview,
     isError: isErrorOverview,
+    isFetching: isFetchingOverview,
   } = useQuery<StockOverview>("overview", () => fetchOverview());
 
   const fetchOverview = () =>
@@ -75,7 +78,14 @@ const Stock: NextPage = () => {
       )
       .then((res) => res.data as StockOverview);
 
-  if (isLoadingStock || isLoadingNews || isLoadingOverview) {
+  if (
+    isLoadingStock ||
+    isLoadingNews ||
+    isLoadingOverview ||
+    isFetchingStock ||
+    isFetchingNews ||
+    isFetchingOverview
+  ) {
     return (
       <main className="flex min-h-screen flex-col items-center justify-center">
         <LoadingSpin />

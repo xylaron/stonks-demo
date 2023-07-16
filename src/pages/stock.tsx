@@ -11,18 +11,71 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { RxCross2 } from "react-icons/rx";
 import LoadingSpin from "components/LoadingSpin";
 import toast from "react-hot-toast";
+import { IoIosStar, IoIosStarOutline } from "react-icons/io";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import firebase_app, { db } from "firebase/config";
+import { getAuth } from "firebase/auth";
+
+interface Favourite {
+  name: string;
+  symbol: string;
+}
 
 const Stock: NextPage = () => {
+  const auth = getAuth(firebase_app);
   const router = useRouter();
 
   const [stockGraphPick, setStockGraphPick] = useState(1);
+  const [favourites, setFavourites] = useState<Favourite[]>([]);
+
+  useEffect(() => {
+    const fetchFavourites = async () => {
+      if (auth.currentUser) {
+        const docRef = doc(db, "users", auth.currentUser.uid);
+        const docSnap = await getDoc(docRef);
+        const favourites = (docSnap.data()?.favourites as Favourite[]) || [];
+        setFavourites(favourites);
+      }
+    };
+    void fetchFavourites();
+  }, [auth]);
+
+  const addRemoveFavourite = async (symbol: string, name: string) => {
+    const docRef = doc(db, "users", auth.currentUser!.uid);
+    const docSnap = await getDoc(docRef);
+
+    const favourites = (docSnap.data()?.favourites as Favourite[]) || [];
+
+    const existingFavourite = favourites.find(
+      (fav: Favourite) => fav.symbol === symbol
+    );
+
+    if (existingFavourite) {
+      const newFavourites = favourites.filter(
+        (fav: Favourite) => fav.symbol !== symbol
+      );
+      await updateDoc(docRef, { favourites: newFavourites }).catch((err) => {
+        toast.error("Something went wrong. Please try again.");
+        console.error(err);
+      });
+      setFavourites(newFavourites);
+    } else {
+      const newFavorite: Favourite = { name, symbol };
+      const newFavourites = [...favourites, newFavorite];
+      await updateDoc(docRef, { favourites: newFavourites }).catch((err) => {
+        toast.error("Something went wrong. Please try again.");
+        console.error(err);
+      });
+      setFavourites(newFavourites);
+    }
+  };
 
   const {
     data: stockData,
@@ -236,7 +289,39 @@ const Stock: NextPage = () => {
         <div className="container flex flex-col items-center justify-center px-4 py-16">
           <div className="w-full border-b border-neutral-600 p-2">
             <div className="flex flex-row justify-between text-4xl font-extrabold">
-              <div>{router.query.symbol as string}</div>
+              <div className="flex flex-row items-center gap-4">
+                <div>{router.query.symbol as string}</div>
+                <div className="cursor-pointer">
+                  {" "}
+                  {favourites.find(
+                    (fav: Favourite) =>
+                      fav.symbol === (router.query.symbol as string)
+                  ) ? (
+                    <IoIosStar
+                      onClick={(event: React.MouseEvent) => {
+                        event.stopPropagation();
+                        void addRemoveFavourite(
+                          router.query.symbol as string,
+                          router.query.name as string
+                        );
+                      }}
+                      color="yellow"
+                      size={24}
+                    />
+                  ) : (
+                    <IoIosStarOutline
+                      size={24}
+                      onClick={(event: React.MouseEvent) => {
+                        event.stopPropagation();
+                        void addRemoveFavourite(
+                          router.query.symbol as string,
+                          router.query.name as string
+                        );
+                      }}
+                    />
+                  )}
+                </div>
+              </div>
               <RxCross2
                 onClick={() =>
                   void router.push({

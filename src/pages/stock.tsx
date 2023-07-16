@@ -50,12 +50,12 @@ const Stock: NextPage = () => {
   const fetchNewsData = () =>
     axios
       .get(
-        `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&tickers=${
-          router.query.symbol as string
-        }&apikey=${
-          process.env.NEXT_PUBLIC_ALPHAVANTAGE_API_KEY as string
-        }&limit=10`
-        // `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&tickers=AAPL&apikey=demo`
+        // `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&tickers=${
+        //   router.query.symbol as string
+        // }&apikey=${
+        //   process.env.NEXT_PUBLIC_ALPHAVANTAGE_API_KEY as string
+        // }&limit=10`
+        `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&tickers=AAPL&apikey=demo`
       )
       .then((res) => res.data as NewsData);
 
@@ -68,10 +68,10 @@ const Stock: NextPage = () => {
   const fetchOverview = () =>
     axios
       .get(
-        `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${
-          router.query.symbol as string
-        }&apikey=${process.env.NEXT_PUBLIC_ALPHAVANTAGE_API_KEY as string}`
-        // `https://www.alphavantage.co/query?function=OVERVIEW&symbol=IBM&apikey=demo`
+        // `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${
+        //   router.query.symbol as string
+        // }&apikey=${process.env.NEXT_PUBLIC_ALPHAVANTAGE_API_KEY as string}`
+        `https://www.alphavantage.co/query?function=OVERVIEW&symbol=IBM&apikey=demo`
       )
       .then((res) => res.data as StockOverview);
 

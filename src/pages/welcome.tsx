@@ -61,7 +61,7 @@ const Welcome: NextPage = () => {
           <div className="flex flex-col items-center justify-center rounded-3xl bg-neutral-800 px-4 py-16 font-medium shadow-md shadow-neutral-900">
             <div className="m-8 text-xl">What should we call you?</div>
             <input
-              type="tel"
+              type="text"
               className="m-8 rounded-lg bg-neutral-700 p-2 text-center text-xl shadow-md"
               onChange={(e) => setUsername(e.target.value)}
               value={username}
